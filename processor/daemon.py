@@ -4,6 +4,7 @@ Reads HermesVault/config/schedule.yaml. Runs processors on their configured
 interval. Retries with exponential backoff. Reloads schedule on file change.
 Graceful Ctrl+C shutdown. Failed jobs are logged and do not stop the daemon.
 """
+
 from __future__ import annotations
 
 import importlib
@@ -86,12 +87,12 @@ def _parse_interval(value: str) -> int:
 @dataclass
 class RetryPolicy:
     count: int = 3
-    delay: int = 30      # base delay seconds
+    delay: int = 30  # base delay seconds
     backoff: str = "exponential"
 
     def wait_for(self, attempt: int) -> float:
         if self.backoff == "exponential":
-            return self.delay * (2 ** attempt)
+            return self.delay * (2**attempt)
         if self.backoff == "linear":
             return self.delay * (attempt + 1)
         return float(self.delay)
@@ -100,7 +101,7 @@ class RetryPolicy:
 @dataclass
 class JobSpec:
     name: str
-    interval: int        # seconds
+    interval: int  # seconds
     next_run: float = 0.0
 
 
@@ -115,10 +116,7 @@ def _load_schedule() -> Schedule:
     try:
         import yaml
     except ImportError:
-        raise ImportError(
-            "pyyaml is required for daemon mode.\n"
-            "Install: pip install pyyaml"
-        )
+        raise ImportError("pyyaml is required for daemon mode.\n" "Install: pip install pyyaml")
 
     if not SCHEDULE_FILE.exists():
         SCHEDULE_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -180,20 +178,20 @@ def _run_job(job: JobSpec, retry: RetryPolicy, history: JobHistory) -> None:
                 time.sleep(wait)
             else:
                 status = "fail"
-                logger.error(
-                    f"[DAEMON] {job.name} failed after {retry.count} attempt(s): {e}"
-                )
+                logger.error(f"[DAEMON] {job.name} failed after {retry.count} attempt(s): {e}")
 
     elapsed = time.perf_counter() - start
-    history.append(JobRecord(
-        name=job.name,
-        start_time=start_ts,
-        finish_time=JobRecord.now(),
-        duration=round(elapsed, 3),
-        status=status,
-        exception=exc_msg if status == "fail" else None,
-        retry_count=attempts,
-    ))
+    history.append(
+        JobRecord(
+            name=job.name,
+            start_time=start_ts,
+            finish_time=JobRecord.now(),
+            duration=round(elapsed, 3),
+            status=status,
+            exception=exc_msg if status == "fail" else None,
+            retry_count=attempts,
+        )
+    )
     if status == "ok":
         logger.info(f"[DAEMON] Job done: {job.name} ({elapsed:.2f}s)")
 

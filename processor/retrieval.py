@@ -1,4 +1,5 @@
 """Retrieval benchmark — evaluates search quality; auto-generates question dataset."""
+
 from __future__ import annotations
 
 import json
@@ -14,11 +15,36 @@ VAULT = ROOT / "HermesVault"
 QUESTIONS_FILE = VAULT / "benchmark" / "questions.json"
 INDEX_FILE = VAULT / "index" / "vault_index.json"
 
-_STOP = frozenset({
-    "a", "an", "the", "is", "are", "was", "were", "be", "been",
-    "what", "who", "how", "when", "where", "why", "which",
-    "in", "on", "at", "to", "of", "for", "and", "or", "not", "do",
-})
+_STOP = frozenset(
+    {
+        "a",
+        "an",
+        "the",
+        "is",
+        "are",
+        "was",
+        "were",
+        "be",
+        "been",
+        "what",
+        "who",
+        "how",
+        "when",
+        "where",
+        "why",
+        "which",
+        "in",
+        "on",
+        "at",
+        "to",
+        "of",
+        "for",
+        "and",
+        "or",
+        "not",
+        "do",
+    }
+)
 
 
 def _keywords(text: str) -> set[str]:
@@ -63,13 +89,15 @@ def generate_questions(save: bool = True) -> list[dict]:
             name = (e.get("name") or "").strip()
             if not name:
                 continue
-            questions.append({
-                "question": f"What is {name}?",
-                "expected_docs": [stem],
-                "expected_entities": [name],
-                "expected_keywords": [],
-                "expected_projects": [name] if e.get("type") == "Project" else [],
-            })
+            questions.append(
+                {
+                    "question": f"What is {name}?",
+                    "expected_docs": [stem],
+                    "expected_entities": [name],
+                    "expected_keywords": [],
+                    "expected_projects": [name] if e.get("type") == "Project" else [],
+                }
+            )
 
     if questions and save:
         QUESTIONS_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -119,11 +147,13 @@ class RetrievalBenchmark:
             existing = {d["title"] for d in index}
             for sf in summary_dir.glob("*.md"):
                 if sf.stem not in existing:
-                    index.append({
-                        "title": sf.stem,
-                        "path": str(sf.relative_to(VAULT)).replace("\\", "/"),
-                        "folder": "knowledge/summary",
-                    })
+                    index.append(
+                        {
+                            "title": sf.stem,
+                            "path": str(sf.relative_to(VAULT)).replace("\\", "/"),
+                            "folder": "knowledge/summary",
+                        }
+                    )
 
         if not index:
             logger.info("[BENCHMARK] Index is empty. Run `hermes run` first.")

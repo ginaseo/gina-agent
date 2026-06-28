@@ -1,4 +1,5 @@
 """Tests for KeywordProcessor."""
+
 from unittest.mock import MagicMock, patch
 
 import pytest

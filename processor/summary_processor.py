@@ -48,9 +48,7 @@ class SummaryProcessor:
                     continue
 
                 logger.info(f"[SUMMARY] {file.name}")
-                prompt = prompt_template.replace(
-                    "{markdown}", file.read_text(encoding="utf-8")
-                )
+                prompt = prompt_template.replace("{markdown}", file.read_text(encoding="utf-8"))
 
                 try:
                     summary = client.ask(prompt)

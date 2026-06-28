@@ -1,4 +1,5 @@
 """Shared pytest fixtures for Hermes Agent tests."""
+
 from pathlib import Path
 
 import pytest

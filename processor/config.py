@@ -5,6 +5,7 @@ Reads from environment variables and .env file. Call cfg.validate_llm()
 before creating an LLMClient to get a clear error message when credentials
 are missing instead of an obscure API error later.
 """
+
 from __future__ import annotations
 
 import os

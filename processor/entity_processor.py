@@ -48,13 +48,9 @@ class EntityProcessor:
             return
 
         prompt_template = PROMPT.read_text(encoding="utf-8")
-        project_alias: dict[str, str] = json.loads(
-            PROJECT_ALIAS_FILE.read_text(encoding="utf-8")
-        )
+        project_alias: dict[str, str] = json.loads(PROJECT_ALIAS_FILE.read_text(encoding="utf-8"))
         existing_projects: dict[str, str] = {
-            p.name.lower(): p.name
-            for p in PROJECTS.iterdir()
-            if p.is_dir()
+            p.name.lower(): p.name for p in PROJECTS.iterdir() if p.is_dir()
         }
         generated = 0
 
@@ -82,9 +78,7 @@ class EntityProcessor:
                     logger.error(f"[FAIL] Invalid JSON : {summary_file.name}")
                     continue
 
-                entity_output = ENTITY / summary_file.name.replace(
-                    "-summary.md", "-entity.json"
-                )
+                entity_output = ENTITY / summary_file.name.replace("-summary.md", "-entity.json")
                 entity_output.write_text(
                     json.dumps(entities, ensure_ascii=False, indent=2),
                     encoding="utf-8",

@@ -19,10 +19,19 @@ logger = _log.get_logger(__name__)
 
 # entity / keyword / related share no inter-dependency — safe to run concurrently
 _PARALLEL_GROUP = {"entity", "keyword", "related"}
-_SUBCOMMANDS = frozenset({
-    "run", "watch", "validate", "clean", "benchmark",
-    "daemon", "history", "evaluate", "benchmark-retrieval",
-})
+_SUBCOMMANDS = frozenset(
+    {
+        "run",
+        "watch",
+        "validate",
+        "clean",
+        "benchmark",
+        "daemon",
+        "history",
+        "evaluate",
+        "benchmark-retrieval",
+    }
+)
 
 
 class ProcessorRunner:
@@ -95,15 +104,19 @@ class ProcessorRunner:
             self._benchmark()
         elif cmd == "daemon":
             from processor.daemon import run_daemon
+
             run_daemon()
         elif cmd == "history":
             from processor.history import JobHistory
+
             JobHistory().display(n=self.last_n)
         elif cmd == "evaluate":
             from processor.evaluator import Evaluator
+
             Evaluator().run()
         elif cmd == "benchmark-retrieval":
             from processor.retrieval import RetrievalBenchmark
+
             RetrievalBenchmark().run()
         else:  # "run" or default
             self._run_once()
@@ -120,11 +133,7 @@ class ProcessorRunner:
         logger.info("=" * 50)
 
         pending = self._filter_targets()
-        failed = (
-            self._run_parallel(pending)
-            if self.parallel
-            else self._run_sequential(pending)
-        )
+        failed = self._run_parallel(pending) if self.parallel else self._run_sequential(pending)
 
         logger.info("")
         if failed:

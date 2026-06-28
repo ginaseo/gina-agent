@@ -32,12 +32,14 @@ class VaultIndexer:
                 continue
             mtime = file.stat().st_mtime
             current_state[str(file.resolve())] = mtime
-            documents.append({
-                "title": file.stem,
-                "path": str(relative).replace("\\", "/"),
-                "folder": relative.parts[0],
-                "modified": mtime,
-            })
+            documents.append(
+                {
+                    "title": file.stem,
+                    "path": str(relative).replace("\\", "/"),
+                    "folder": relative.parts[0],
+                    "modified": mtime,
+                }
+            )
 
         if not self.force and state.state == current_state and output.exists():
             logger.info("[SKIP] Vault Index")

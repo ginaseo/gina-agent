@@ -10,6 +10,7 @@ Usage:
     logger = get_logger(__name__)
     logger.info("[SKIP] file.md")
 """
+
 import io
 import logging
 import sys
@@ -42,9 +43,7 @@ def setup(level: str = "INFO", log_file: Path | None = None) -> None:
 
 def _add_file_handler(path: Path, root: logging.Logger) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    fh = RotatingFileHandler(
-        path, maxBytes=10 * 1024 * 1024, backupCount=5, encoding="utf-8"
-    )
+    fh = RotatingFileHandler(path, maxBytes=10 * 1024 * 1024, backupCount=5, encoding="utf-8")
     fh.setFormatter(logging.Formatter("%(asctime)s %(levelname)-8s %(name)s: %(message)s"))
     root.addHandler(fh)
 

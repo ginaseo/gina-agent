@@ -1,4 +1,5 @@
 """Knowledge evaluation — statistics, quality, health, learning score, graph metrics."""
+
 from __future__ import annotations
 
 import json
@@ -23,6 +24,7 @@ _WIKILINK = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]*)?\]\]")
 # Data classes
 # ------------------------------------------------------------------
 
+
 @dataclass
 class KnowledgeStats:
     documents: int = 0
@@ -38,15 +40,15 @@ class KnowledgeStats:
 
 @dataclass
 class QualityMetrics:
-    entity_coverage: float = 0.0      # % summaries with entity file
-    keyword_coverage: float = 0.0     # % summaries with keyword file
-    relation_coverage: float = 0.0    # % summaries with related file
-    summary_coverage: float = 0.0     # % raw docs with summary
+    entity_coverage: float = 0.0  # % summaries with entity file
+    keyword_coverage: float = 0.0  # % summaries with keyword file
+    relation_coverage: float = 0.0  # % summaries with related file
+    summary_coverage: float = 0.0  # % raw docs with summary
     missing_summaries: int = 0
     missing_keywords: int = 0
     missing_relations: int = 0
-    orphan_entities: int = 0          # entity files with no matching summary
-    broken_references: int = 0        # [[links]] pointing to non-existent docs
+    orphan_entities: int = 0  # entity files with no matching summary
+    broken_references: int = 0  # [[links]] pointing to non-existent docs
     duplicate_entity_names: int = 0
 
 
@@ -67,6 +69,7 @@ class GraphMetrics:
 # Helpers
 # ------------------------------------------------------------------
 
+
 def _count(path: Path, pattern: str) -> int:
     return len(list(path.rglob(pattern))) if path.exists() else 0
 
@@ -82,6 +85,7 @@ def _count_since(path: Path, pattern: str, days: int) -> int:
 # ------------------------------------------------------------------
 # Evaluator
 # ------------------------------------------------------------------
+
 
 class Evaluator:
 
@@ -372,12 +376,14 @@ class Evaluator:
         self, history: list[dict], stats: KnowledgeStats, health: float, learning: float
     ) -> None:
         EVAL_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
-        history.append({
-            "timestamp": stats.timestamp,
-            "health_score": health,
-            "learning_score": learning,
-            "stats": asdict(stats),
-        })
+        history.append(
+            {
+                "timestamp": stats.timestamp,
+                "health_score": health,
+                "learning_score": learning,
+                "stats": asdict(stats),
+            }
+        )
         if len(history) > 365:
             history = history[-365:]
         EVAL_HISTORY_FILE.write_text(

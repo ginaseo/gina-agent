@@ -1,4 +1,5 @@
 """Tests for ProcessorRunner — argument parsing, target selection, parallel, watch."""
+
 import sys
 from unittest.mock import patch
 
@@ -13,6 +14,7 @@ def _make_runner(args: list[str]) -> ProcessorRunner:
 # ------------------------------------------------------------------
 # Argument parsing
 # ------------------------------------------------------------------
+
 
 def test_no_args_defaults():
     runner = _make_runner([])
@@ -67,6 +69,7 @@ def test_mixed_flags_and_targets():
 # ------------------------------------------------------------------
 # Subcommand parsing
 # ------------------------------------------------------------------
+
 
 def test_subcommand_defaults_to_run():
     runner = _make_runner([])
@@ -129,8 +132,10 @@ def test_log_file_flag():
 # Run behavior
 # ------------------------------------------------------------------
 
+
 class _TrackingProcessor:
     """Processor that records whether process() was called."""
+
     def __init__(self):
         self.called = False
         self.force = False
@@ -167,6 +172,7 @@ def test_force_propagated_to_processors():
 def test_failed_processor_does_not_abort_others(caplog):
     class _FailProcessor:
         force = False
+
         def process(self):
             raise RuntimeError("intentional failure")
 
@@ -226,6 +232,7 @@ def test_clean_subcommand(monkeypatch):
 # Watch mode parsing (does not actually run the loop)
 # ------------------------------------------------------------------
 
+
 def test_parse_watch_no_flag():
     enabled, interval = ProcessorRunner._parse_watch([])
     assert enabled is False
@@ -252,6 +259,7 @@ def test_parse_watch_minimum_interval():
 # ------------------------------------------------------------------
 # New v1.1 subcommands
 # ------------------------------------------------------------------
+
 
 def test_subcommand_daemon():
     runner = _make_runner(["daemon"])

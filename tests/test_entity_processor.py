@@ -1,4 +1,5 @@
 """Tests for EntityProcessor — entity stub creation, alias, dedup."""
+
 import json
 from unittest.mock import MagicMock, patch
 
@@ -24,10 +25,14 @@ def patch_paths(vault, monkeypatch, tmp_path):
     monkeypatch.setattr(ep_module, "WIKI", vault / "wiki")
     monkeypatch.setattr(ep_module, "PROMPT", prompt_file)
     monkeypatch.setattr(ep_module, "PROJECT_ALIAS_FILE", alias_file)
-    monkeypatch.setattr(ep_module, "_ENTITY_FOLDER", {
-        "Project": vault / "projects",
-        "Person": vault / "people",
-    })
+    monkeypatch.setattr(
+        ep_module,
+        "_ENTITY_FOLDER",
+        {
+            "Project": vault / "projects",
+            "Person": vault / "people",
+        },
+    )
     monkeypatch.setattr(ps_module, "STATE_DIR", vault / "index")
 
 

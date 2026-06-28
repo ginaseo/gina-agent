@@ -6,6 +6,7 @@ from processor.daemon import RetryPolicy, _parse_interval
 # _parse_interval
 # ------------------------------------------------------------------
 
+
 def test_parse_interval_seconds():
     assert _parse_interval("30s") == 30
 
@@ -42,24 +43,25 @@ def test_parse_interval_raw_int():
 # RetryPolicy.wait_for
 # ------------------------------------------------------------------
 
+
 def test_retry_exponential_attempt0():
     p = RetryPolicy(count=3, delay=30, backoff="exponential")
-    assert p.wait_for(0) == 30   # 30 * 2^0
+    assert p.wait_for(0) == 30  # 30 * 2^0
 
 
 def test_retry_exponential_attempt1():
     p = RetryPolicy(count=3, delay=30, backoff="exponential")
-    assert p.wait_for(1) == 60   # 30 * 2^1
+    assert p.wait_for(1) == 60  # 30 * 2^1
 
 
 def test_retry_linear_attempt0():
     p = RetryPolicy(count=3, delay=10, backoff="linear")
-    assert p.wait_for(0) == 10   # 10 * (0+1)
+    assert p.wait_for(0) == 10  # 10 * (0+1)
 
 
 def test_retry_linear_attempt2():
     p = RetryPolicy(count=3, delay=10, backoff="linear")
-    assert p.wait_for(2) == 30   # 10 * (2+1)
+    assert p.wait_for(2) == 30  # 10 * (2+1)
 
 
 def test_retry_fixed_any_attempt():

@@ -1,4 +1,5 @@
 """Tests for SummaryProcessor — LLM mocked, incremental + --force."""
+
 from unittest.mock import MagicMock, patch
 
 import pytest

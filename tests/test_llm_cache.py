@@ -1,4 +1,5 @@
 """Tests for LLMCache — put/get/flush/merge behavior."""
+
 import json
 
 import pytest

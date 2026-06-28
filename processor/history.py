@@ -1,4 +1,5 @@
 """Job execution history — persistence and display."""
+
 from __future__ import annotations
 
 import json
@@ -21,7 +22,7 @@ class JobRecord:
     start_time: str
     finish_time: str
     duration: float
-    status: str          # "ok" | "fail"
+    status: str  # "ok" | "fail"
     exception: str | None = None
     retry_count: int = 0
 

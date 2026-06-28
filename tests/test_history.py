@@ -1,4 +1,5 @@
 """Tests for JobHistory — persistence, rolling window, last_success."""
+
 import json
 
 import pytest

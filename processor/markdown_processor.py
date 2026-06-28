@@ -54,8 +54,7 @@ class MarkdownProcessor:
                 "---\n\n"
                 "# Summary\n\n"
                 "> TODO\n\n"
-                "# Original Content\n\n"
-                + content,
+                "# Original Content\n\n" + content,
                 encoding="utf-8",
             )
             state.update(file)

@@ -1,4 +1,5 @@
 """Tests for ProcessingState incremental logic."""
+
 from pathlib import Path
 
 import pytest
@@ -36,6 +37,7 @@ def test_unchanged_file_not_modified(tmp_path):
 
 def test_modified_file_detected(tmp_path):
     import os
+
     f = _make_file(tmp_path)
     state = ProcessingState("test")
     state.update(f)
@@ -57,7 +59,6 @@ def test_force_always_modified(tmp_path):
 
     state2 = ProcessingState("test", force=True)
     assert state2.is_modified(f) is True
-
 
 
 def test_save_load_roundtrip(tmp_path):
