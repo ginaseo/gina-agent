@@ -1,9 +1,10 @@
 """Tests for SummaryProcessor — LLM mocked, incremental + --force."""
-import pytest
 from unittest.mock import MagicMock, patch
 
-import processor.summary_processor as sp_module
+import pytest
+
 import processor.processing_state as ps_module
+import processor.summary_processor as sp_module
 from processor.summary_processor import SummaryProcessor
 
 

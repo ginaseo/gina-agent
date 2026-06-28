@@ -1,6 +1,6 @@
 """Tests for MarkdownProcessor — incremental + --force behavior."""
+
 import pytest
-from pathlib import Path
 
 import processor.markdown_processor as mp_module
 import processor.processing_state as ps_module

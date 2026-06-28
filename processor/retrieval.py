@@ -101,7 +101,9 @@ class RetrievalBenchmark:
             questions = generate_questions(save=True)
 
         if not questions:
-            logger.info("[BENCHMARK] No questions available. Add documents and run `hermes run` first.")
+            logger.info(
+                "[BENCHMARK] No questions available. Add documents and run `hermes run` first."
+            )
             return
 
         # Build search index: vault index + summary files

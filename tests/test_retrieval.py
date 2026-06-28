@@ -1,5 +1,4 @@
 """Tests for retrieval — _keywords, _score, _search."""
-import pytest
 
 from processor.retrieval import _keywords, _score, _search
 

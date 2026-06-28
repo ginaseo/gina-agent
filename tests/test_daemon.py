@@ -1,8 +1,6 @@
 """Tests for daemon — _parse_interval and RetryPolicy."""
-import pytest
 
-from processor.daemon import _parse_interval, RetryPolicy
-
+from processor.daemon import RetryPolicy, _parse_interval
 
 # ------------------------------------------------------------------
 # _parse_interval

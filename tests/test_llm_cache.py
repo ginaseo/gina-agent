@@ -1,7 +1,7 @@
 """Tests for LLMCache — put/get/flush/merge behavior."""
 import json
+
 import pytest
-from pathlib import Path
 
 import processor.llm.cache as cache_module
 from processor.llm.cache import LLMCache

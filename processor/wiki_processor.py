@@ -30,7 +30,7 @@ class WikiProcessor:
             for file in files:
                 logger.info(f"[SKIP] {file.name}")
             logger.info("")
-            logger.info(f"Generated : 0 wiki file(s)")
+            logger.info("Generated : 0 wiki file(s)")
             logger.info(f"Skipped  : {len(files)} wiki file(s)")
             return
 

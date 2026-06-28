@@ -1,7 +1,6 @@
 """Tests for ProcessorRunner — argument parsing, target selection, parallel, watch."""
 import sys
-import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from processor.runner import ProcessorRunner
 

@@ -32,7 +32,7 @@ class SummaryProcessor:
             for file in files:
                 logger.info(f"[SKIP] {file.name}")
             logger.info("")
-            logger.info(f"Summary Generated : 0 file(s)")
+            logger.info("Summary Generated : 0 file(s)")
             logger.info(f"Summary Skipped  : {len(files)} file(s)")
             return
 

@@ -30,7 +30,7 @@ class MarkdownProcessor:
             for file in files:
                 logger.info(f"[SKIP] {file.name}")
             logger.info("")
-            logger.info(f"Processed : 0 file(s)")
+            logger.info("Processed : 0 file(s)")
             logger.info(f"Skipped  : {len(files)} file(s)")
             return
 

@@ -1,6 +1,7 @@
 """Tests for ProcessingState incremental logic."""
-import pytest
 from pathlib import Path
+
+import pytest
 
 import processor.processing_state as ps_module
 from processor.processing_state import ProcessingState

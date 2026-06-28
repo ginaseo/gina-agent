@@ -1,10 +1,9 @@
 """Tests for JobHistory — persistence, rolling window, last_success."""
 import json
-import pytest
-from unittest.mock import patch
-from pathlib import Path
 
-from processor.history import JobHistory, JobRecord, _MAX_RECORDS
+import pytest
+
+from processor.history import _MAX_RECORDS, JobHistory, JobRecord
 
 
 def _record(name="test", status="ok", finish="2026-01-01T00:00:00+00:00") -> JobRecord:

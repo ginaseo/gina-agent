@@ -1,6 +1,7 @@
 """Shared pytest fixtures for Hermes Agent tests."""
-import pytest
 from pathlib import Path
+
+import pytest
 
 from processor.log import setup
 

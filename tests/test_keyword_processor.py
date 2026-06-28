@@ -1,6 +1,7 @@
 """Tests for KeywordProcessor."""
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 import processor.keyword_processor as kp_module
 import processor.processing_state as ps_module
@@ -43,7 +44,10 @@ def test_creates_keyword_file(vault):
     src = vault / "knowledge" / "summary" / "x-summary.md"
     src.write_text("summary content", encoding="utf-8")
 
-    with patch("processor.keyword_processor.LLMClient", return_value=_mock_client("- AI\n- Hermes")):
+    with patch(
+        "processor.keyword_processor.LLMClient",
+        return_value=_mock_client("- AI\n- Hermes"),
+    ):
         KeywordProcessor().process()
 
     output = vault / "knowledge" / "keywords" / "x-keywords.md"

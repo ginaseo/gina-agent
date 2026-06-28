@@ -148,11 +148,14 @@ class Evaluator:
         related_dir = VAULT / "knowledge" / "related"
         slack_dir = VAULT / "knowledge" / "slack"
 
-        summary_stems = {f.stem for f in summary_dir.glob("*.md")} if summary_dir.exists() else set()
-        entity_stems = {f.stem for f in entity_dir.glob("*.json")} if entity_dir.exists() else set()
-        keyword_stems = {f.stem for f in keyword_dir.glob("*.md")} if keyword_dir.exists() else set()
-        related_stems = {f.stem for f in related_dir.glob("*.md")} if related_dir.exists() else set()
-        slack_stems = {f.stem for f in slack_dir.glob("*.md")} if slack_dir.exists() else set()
+        def _stems(d: Path, pat: str) -> set[str]:
+            return {f.stem for f in d.glob(pat)} if d.exists() else set()
+
+        summary_stems = _stems(summary_dir, "*.md")
+        entity_stems = _stems(entity_dir, "*.json")
+        keyword_stems = _stems(keyword_dir, "*.md")
+        related_stems = _stems(related_dir, "*.md")
+        slack_stems = _stems(slack_dir, "*.md")
 
         # Normalize all to base stem for cross-directory comparison
         # e.g. "foo-summary" → "foo", "foo-entity" → "foo", "foo-keywords" → "foo"
@@ -292,7 +295,9 @@ class Evaluator:
     # Scoring
     # ------------------------------------------------------------------
 
-    def _compute_health(self, stats: KnowledgeStats, quality: QualityMetrics) -> tuple[float, list[str]]:
+    def _compute_health(
+        self, stats: KnowledgeStats, quality: QualityMetrics
+    ) -> tuple[float, list[str]]:
         score = 100.0
         deductions: list[str] = []
 
@@ -303,23 +308,44 @@ class Evaluator:
 
         if stats.summaries > 0:
             if quality.entity_coverage < 80:
-                deduct((80 - quality.entity_coverage) * 0.15, f"Entity coverage {quality.entity_coverage:.0f}%")
+                deduct(
+                    (80 - quality.entity_coverage) * 0.15,
+                    f"Entity coverage {quality.entity_coverage:.0f}%",
+                )
             if quality.keyword_coverage < 80:
-                deduct((80 - quality.keyword_coverage) * 0.10, f"Keyword coverage {quality.keyword_coverage:.0f}%")
+                deduct(
+                    (80 - quality.keyword_coverage) * 0.10,
+                    f"Keyword coverage {quality.keyword_coverage:.0f}%",
+                )
             if quality.relation_coverage < 80:
-                deduct((80 - quality.relation_coverage) * 0.08, f"Relation coverage {quality.relation_coverage:.0f}%")
+                deduct(
+                    (80 - quality.relation_coverage) * 0.08,
+                    f"Relation coverage {quality.relation_coverage:.0f}%",
+                )
 
         if stats.documents > 0 and quality.summary_coverage < 80:
-            deduct((80 - quality.summary_coverage) * 0.20, f"Summary coverage {quality.summary_coverage:.0f}%")
+            deduct(
+                (80 - quality.summary_coverage) * 0.20,
+                f"Summary coverage {quality.summary_coverage:.0f}%",
+            )
 
         if quality.orphan_entities > 0:
-            deduct(min(quality.orphan_entities * 0.5, 10.0), f"{quality.orphan_entities} orphan entity file(s)")
+            deduct(
+                min(quality.orphan_entities * 0.5, 10.0),
+                f"{quality.orphan_entities} orphan entity file(s)",
+            )
 
         if quality.broken_references > 0:
-            deduct(min(quality.broken_references * 1.0, 10.0), f"{quality.broken_references} broken reference(s)")
+            deduct(
+                min(quality.broken_references * 1.0, 10.0),
+                f"{quality.broken_references} broken reference(s)",
+            )
 
         if quality.duplicate_entity_names > 0:
-            deduct(min(quality.duplicate_entity_names * 0.3, 5.0), f"{quality.duplicate_entity_names} duplicate entity name(s)")
+            deduct(
+                min(quality.duplicate_entity_names * 0.3, 5.0),
+                f"{quality.duplicate_entity_names} duplicate entity name(s)",
+            )
 
         return round(max(0.0, score), 1), deductions
 
@@ -342,7 +368,9 @@ class Evaluator:
         except Exception:
             return []
 
-    def _save_history(self, history: list[dict], stats: KnowledgeStats, health: float, learning: float) -> None:
+    def _save_history(
+        self, history: list[dict], stats: KnowledgeStats, health: float, learning: float
+    ) -> None:
         EVAL_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
         history.append({
             "timestamp": stats.timestamp,
@@ -387,7 +415,10 @@ class Evaluator:
         logger.info("## Knowledge Growth")
         for period, label in [("today", "Today"), ("7d", "Last 7 Days"), ("30d", "Last 30 Days")]:
             d = growth[period]
-            logger.info(f"  {label:<14}: +{d['documents']} docs  +{d['summaries']} summaries  +{d['entities']} entities")
+            logger.info(
+                f"  {label:<14}: +{d['documents']} docs"
+                f"  +{d['summaries']} summaries  +{d['entities']} entities"
+            )
 
         logger.info("")
         logger.info("## Knowledge Quality")
@@ -473,8 +504,15 @@ class Evaluator:
             f"- Wiki Pages: {stats.wiki_pages}",
             "",
             "## Growth",
-            f"- Today: +{growth['today']['documents']} docs, +{growth['today']['summaries']} summaries, +{growth['today']['entities']} entities",
-            f"- Last 7 Days: +{growth['7d']['documents']} docs, +{growth['7d']['summaries']} summaries",
+            (
+                f"- Today: +{growth['today']['documents']} docs,"
+                f" +{growth['today']['summaries']} summaries,"
+                f" +{growth['today']['entities']} entities"
+            ),
+            (
+                f"- Last 7 Days: +{growth['7d']['documents']} docs,"
+                f" +{growth['7d']['summaries']} summaries"
+            ),
             f"- Last 30 Days: +{growth['30d']['documents']} docs",
             "",
             "## Quality",

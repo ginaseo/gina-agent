@@ -1,9 +1,10 @@
 """Tests for RelatedProcessor."""
-import pytest
 from unittest.mock import MagicMock, patch
 
-import processor.related_processor as rp_module
+import pytest
+
 import processor.processing_state as ps_module
+import processor.related_processor as rp_module
 from processor.related_processor import RelatedProcessor
 
 

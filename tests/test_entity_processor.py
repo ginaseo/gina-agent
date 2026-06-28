@@ -1,7 +1,8 @@
 """Tests for EntityProcessor — entity stub creation, alias, dedup."""
 import json
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 import processor.entity_processor as ep_module
 import processor.processing_state as ps_module

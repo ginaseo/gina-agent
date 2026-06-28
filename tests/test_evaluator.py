@@ -1,7 +1,4 @@
 """Tests for Evaluator — file counting, health score, deductions, learning score."""
-import pytest
-from unittest.mock import patch
-from pathlib import Path
 
 from processor.evaluator import (
     Evaluator,
