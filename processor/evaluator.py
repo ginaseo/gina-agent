@@ -308,7 +308,7 @@ class Evaluator:
         def deduct(amount: float, reason: str) -> None:
             nonlocal score
             score -= amount
-            deductions.append(f"{reason} (−{amount:.1f})")
+            deductions.append(f"{reason} (-{amount:.1f})")
 
         if stats.summaries > 0:
             if quality.entity_coverage < 80:
@@ -456,7 +456,7 @@ class Evaluator:
         logger.info(f"  {health} / 100")
         if deductions:
             for d in deductions:
-                logger.info(f"  − {d}")
+                logger.info(f"  - {d}")
         else:
             logger.info("  No deductions.")
 
