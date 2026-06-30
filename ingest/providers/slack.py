@@ -7,94 +7,61 @@ from slack_sdk import WebClient
 
 from ingest.base import BaseProvider
 
-# 프로젝트 루트
 ROOT = Path(__file__).resolve().parents[2]
-
-# HermesVault 위치
 VAULT = ROOT / "HermesVault"
 
-# .env 로드
 load_dotenv(ROOT / ".env")
 
 
 class SlackProvider(BaseProvider):
 
     def __init__(self):
-
         self.client = None
-
         self.token = os.getenv("SLACK_BOT_TOKEN")
-        self.channel = os.getenv("SLACK_CHANNEL_ID")
+        # 콤마 구분 다채널 지원: SLACK_CHANNEL_IDS=C01,C02 또는 SLACK_CHANNEL_ID=C01
+        ids = os.getenv("SLACK_CHANNEL_IDS") or os.getenv("SLACK_CHANNEL_ID", "")
+        self.channels = [c.strip() for c in ids.split(",") if c.strip()]
 
     def process(self):
         self.run()
 
     def connect(self):
-
         self.client = WebClient(token=self.token)
-
         print("[Slack] Connected")
 
     def fetch(self):
-
-        response = self.client.conversations_history(channel=self.channel, limit=5)
-
-        return response["messages"]
+        results = {}
+        for ch in self.channels:
+            try:
+                resp = self.client.conversations_history(channel=ch, limit=20)
+                results[ch] = resp["messages"]
+            except Exception as e:
+                print(f"[Slack] Failed to fetch {ch}: {e}")
+        return results or None
 
     def save(self, data):
-
         now = datetime.now()
-
         year = now.strftime("%Y")
         month = now.strftime("%m")
         date = now.strftime("%Y-%m-%d")
 
-        vault = VAULT / "slack" / year / month
-        vault.mkdir(parents=True, exist_ok=True)
+        for ch, messages in data.items():
+            vault = VAULT / "slack" / year / month
+            vault.mkdir(parents=True, exist_ok=True)
+            filename = vault / f"{date}-{ch}.md"
 
-        filename = vault / f"{date}-hermes.md"
-
-        print("=" * 80)
-        print("[DEBUG] Saving Slack Messages")
-        print("=" * 80)
-
-        with open(filename, "w", encoding="utf-8", newline="\n") as f:
-
-            f.write("# Slack Import\n\n")
-            f.write(f"Date: {date}\n\n")
-            f.write("---\n\n")
-
-            for idx, msg in enumerate(reversed(data), start=1):
-
-                text = msg.get("text", "").strip()
-                ts = msg.get("ts", "")
-
-                # ---------- DEBUG ----------
-                print(f"\n[Message {idx}]")
-
-                print("\nrepr(text)")
-                print(repr(text))
-
-                print("\ntext")
-                print(text)
-
-                print("\nUnicode Code Points")
-                print(" ".join(hex(ord(ch)) for ch in text[:50]))
-
-                print("-" * 80)
-                # ---------------------------
-
-                f.write(f"## Message {idx}\n\n")
-                f.write(f"Timestamp: {ts}\n\n")
-                f.write(text)
-                f.write("\n\n")
+            with open(filename, "w", encoding="utf-8", newline="\n") as f:
+                f.write(f"# Slack Import — {ch}\n\n")
+                f.write(f"Date: {date}\n\n")
                 f.write("---\n\n")
 
-        print("=" * 80)
-        print("[SAVE]", filename)
-        print("=" * 80)
+                for idx, msg in enumerate(reversed(messages), start=1):
+                    text = msg.get("text", "").strip()
+                    ts = msg.get("ts", "")
+                    f.write(f"## Message {idx}\n\n")
+                    f.write(f"Timestamp: {ts}\n\n")
+                    f.write(text)
+                    f.write("\n\n")
+                    f.write("---\n\n")
 
-
-if __name__ == "__main__":
-
-    SlackProvider().run()
+            print(f"[Slack] Saved {filename.name}")
